@@ -1,0 +1,124 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int count = 0;
+
+struct node {
+    int sem, phno;
+    char usn[20], name[20], branch[20];
+    struct node *link;
+};
+
+struct node *first = NULL, *last = NULL;
+
+/* Create Node */
+struct node* createNode() {
+    struct node *t = (struct node*)malloc(sizeof(struct node));
+    printf("\nEnter usn name branch sem phno:\n");
+    scanf("%s %s %s %d %d", t->usn, t->name, t->branch, &t->sem, &t->phno);
+    t->link = NULL;
+    count++;
+    return t;
+}
+
+/* Insert at Front */
+void insertFront() {
+    struct node *t = createNode();
+    if (!first) first = last = t;
+    else { t->link = first; first = t; }
+}
+
+/* Insert at End */
+void insertEnd() {
+    struct node *t = createNode();
+    if (!first) first = last = t;
+    else { last->link = t; last = t; }
+}
+
+/* Display */
+void display() {
+    struct node *t = first;
+    if (!t) { printf("\nList is empty\n"); return; }
+    printf("\nThe elements of SLL are:\n");
+    while (t) {
+        printf("%s %s %s %d %d\n", t->usn, t->name, t->branch, t->sem, t->phno);
+        t = t->link;
+    }
+    printf("Number of students = %d\n", count);
+}
+
+/* Delete at Front */
+void deleteFront() {
+    if (!first) { printf("\nList is empty\n"); return; }
+    struct node *t = first;
+    printf("Deleted: %s %s %s %d %d\n", t->usn, t->name, t->branch, t->sem, t->phno);
+    first = first->link;
+    if (!first) last = NULL;
+    free(t); count--;
+}
+
+/* Delete at End */
+void deleteEnd() {
+    if (!first) { printf("\nList is empty\n"); return; }
+    if (first == last) { deleteFront(); return; }
+
+    struct node *t = first;
+    while (t->link != last) t = t->link;
+
+    printf("Deleted: %s %s %s %d %d\n", last->usn, last->name, last->branch, last->sem, last->phno);
+    free(last);
+    last = t;
+    last->link = NULL;
+    count--;
+}
+
+int main() {
+    int ch, ch2, n, i;
+
+    while (1) {
+        printf("\n\n******** MENU ********");
+        printf("\n1. Create SLL (Front Insertion)");
+        printf("\n2. Display");
+        printf("\n3. Insert/Delete at End");
+        printf("\n4. Stack Operations (Front)");
+        printf("\n5. Exit\n");
+        printf("Enter choice: ");
+        scanf("%d", &ch);
+
+        switch (ch) {
+        case 1:
+            printf("Enter number of students: ");
+            scanf("%d", &n);
+            for (i = 0; i < n; i++) insertFront();
+            break;
+
+        case 2:
+            display();
+            break;
+
+        case 3:
+            do {
+                printf("\n1.Insert  2.Delete  3.Exit\n");
+                scanf("%d", &ch2);
+                if (ch2 == 1) insertEnd();
+                else if (ch2 == 2) deleteEnd();
+                display();
+            } while (ch2 != 3);
+            break;
+
+        case 4:
+            do {
+                printf("\n1.Push  2.Pop  3.Exit\n");
+                scanf("%d", &ch2);
+                if (ch2 == 1) insertFront();
+                else if (ch2 == 2) deleteFront();
+                display();
+            } while (ch2 != 3);
+            break;
+
+        case 5:
+            exit(0);
+        }
+    }
+}
